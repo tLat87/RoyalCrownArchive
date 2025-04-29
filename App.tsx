@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import {Provider} from "react-redux";
 import {PersistGate} from "redux-persist/integration/react";
 import {persistor, store} from "./src/redux/store";
-import MainTabNavigator from "./src/navigation/MainTabNavigator";
+import TabNavigator from "./src/navigation/TabNavigator";
 import DynastiesMoreScreen from "./src/screens/DynastiesMoreScreen";
 import FavoritesScreen from "./src/screens/FavoritesScreen";
 import CreateEventsScreen from "./src/screens/CreateEventsScreen";
@@ -39,7 +39,7 @@ export default function App() {
                             fontSize: 24,
                         },
                     }}>
-                       <Stack.Screen name="MainTab" component={MainTabNavigator} options={{ headerShown: false }} />
+                       <Stack.Screen name="MainTab" component={TabNavigator} options={{ headerShown: false }} />
                         <Stack.Screen name="DynastiesMoreScreen" component={DynastiesMoreScreen} options={{ headerShown: false }} />
                         <Stack.Screen name="FavoritesScreen" component={FavoritesScreen} options={{ headerShown: false }} />
                         <Stack.Screen name="CreateEventsScreen" component={CreateEventsScreen} options={{ headerShown: false }} />
