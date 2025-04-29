@@ -10,7 +10,7 @@ const PlaceMoreScreen = ({ navigation, route }) => {
             </TouchableOpacity>
 
             <Image
-                source={{uri: fullItem.image}}
+                source={fullItem.image}
                 style={styles.image}
             />
 
