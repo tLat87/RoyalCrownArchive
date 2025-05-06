@@ -4,10 +4,12 @@ import { persistConfig } from './persistConfig';
 import { combineReducers } from 'redux';
 import eventReducer from './slices/eventSlice';
 import savedReducer from './slices/savedSlice';
+import themeReducer from './slices/themeSlice';
 
 const rootReducer = combineReducers({
   events: eventReducer,
-  saved: savedReducer
+  saved: savedReducer,
+  theme: themeReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

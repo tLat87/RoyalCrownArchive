@@ -12,8 +12,9 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import { launchImageLibrary } from 'react-native-image-picker';
-import {addEvent} from '../redux/slices/eventSlice';
-import {useDispatch} from 'react-redux';
+import { addEvent } from '../redux/slices/eventSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectTheme } from '../redux/slices/themeSlice';
 
 const CreateEventsScreen = ({ navigation }) => {
     const [eventName, setEventName] = useState('');
@@ -27,6 +28,14 @@ const CreateEventsScreen = ({ navigation }) => {
     const [isImportant, setIsImportant] = useState(false);
     const [image, setImage] = useState(null);
     const dispatch = useDispatch();
+
+    const theme = useSelector(selectTheme);
+    const isDarkMode = theme === 'dark';
+
+    const backgroundColor = isDarkMode ? '#000' : '#fff';
+    const textColor = isDarkMode ? '#fff' : '#000';
+    const inputBackground = isDarkMode ? '#111' : '#f0f0f0';
+    const placeholderColor = isDarkMode ? '#999' : '#666';
 
     const addParticipant = () => {
         setParticipants([...participants, '']);
@@ -56,7 +65,6 @@ const CreateEventsScreen = ({ navigation }) => {
         });
     };
 
-
     const handleDone = () => {
         const newEvent = {
             eventName,
@@ -74,55 +82,54 @@ const CreateEventsScreen = ({ navigation }) => {
         navigation.goBack();
     };
 
-
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView style={[styles.container, { backgroundColor }]}>
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
-                  <Image source={require('../assets/img/Frame1462984530.png')} />
+                    <Image source={require('../assets/img/Frame1462984530.png')} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleDone}>
-                    <Text style={styles.done}>DONE</Text>
+                    <Text style={[styles.done, { color: textColor }]}>DONE</Text>
                 </TouchableOpacity>
             </View>
 
-            <Text style={styles.title}>ADD EVENT</Text>
+            <Text style={[styles.title, { color: textColor }]}>ADD EVENT</Text>
 
             <TouchableOpacity style={styles.imagePicker} onPress={handleImagePick}>
                 {image ? (
                     <Image source={{ uri: image }} style={styles.image} />
                 ) : (
-                    <Image source={require('../assets/img/material-symbols-light_add-photo-alternate-outline.png')}  />
+                    <Image source={require('../assets/img/material-symbols-light_add-photo-alternate-outline.png')} />
                 )}
             </TouchableOpacity>
 
             <TextInput
                 placeholder="Name of the event"
-                placeholderTextColor="#999"
+                placeholderTextColor={placeholderColor}
                 value={eventName}
                 onChangeText={setEventName}
-                style={styles.input}
+                style={[styles.input, { backgroundColor: inputBackground, color: textColor }]}
             />
 
             <TextInput
                 placeholder="Country & region"
-                placeholderTextColor="#999"
+                placeholderTextColor={placeholderColor}
                 value={region}
                 onChangeText={setRegion}
-                style={styles.input}
+                style={[styles.input, { backgroundColor: inputBackground, color: textColor }]}
             />
 
             <TextInput
                 placeholder="Description"
-                placeholderTextColor="#999"
+                placeholderTextColor={placeholderColor}
                 value={description}
                 onChangeText={setDescription}
                 multiline
-                style={[styles.input, { height: 100 }]}
+                style={[styles.input, { height: 100, backgroundColor: inputBackground, color: textColor }]}
             />
 
             <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                <Text style={styles.dateText}>Date: {date.toDateString()}</Text>
+                <Text style={[styles.dateText, { color: textColor }]}>Date: {date.toDateString()}</Text>
             </TouchableOpacity>
             {showDatePicker && (
                 <DateTimePicker
@@ -136,12 +143,12 @@ const CreateEventsScreen = ({ navigation }) => {
                 />
             )}
 
-            <View style={styles.pickerContainer}>
+            <View style={[styles.pickerContainer, { backgroundColor: inputBackground }]}>
                 <Picker
                     selectedValue={eventType}
                     onValueChange={(itemValue) => setEventType(itemValue)}
-                    dropdownIconColor="#fff"
-                    style={styles.picker}
+                    dropdownIconColor={textColor}
+                    style={[styles.picker, { color: textColor }]}
                 >
                     <Picker.Item label="All" value="All" />
                     <Picker.Item label="War" value="War" />
@@ -153,25 +160,25 @@ const CreateEventsScreen = ({ navigation }) => {
 
             <TextInput
                 placeholder="Dynasty"
-                placeholderTextColor="#999"
+                placeholderTextColor={placeholderColor}
                 value={dynasty}
                 onChangeText={setDynasty}
-                style={styles.input}
+                style={[styles.input, { backgroundColor: inputBackground, color: textColor }]}
             />
 
             {participants.map((participant, index) => (
                 <TextInput
                     key={index}
                     placeholder={`Participant ${index + 1}`}
-                    placeholderTextColor="#999"
+                    placeholderTextColor={placeholderColor}
                     value={participant}
                     onChangeText={(text) => updateParticipant(index, text)}
-                    style={styles.input}
+                    style={[styles.input, { backgroundColor: inputBackground, color: textColor }]}
                 />
             ))}
 
             <TouchableOpacity onPress={addParticipant} style={styles.addBtn}>
-                <Text style={styles.addBtnText}>+ Add Participant</Text>
+                <Text style={{ color: placeholderColor }}>+ Add Participant</Text>
             </TouchableOpacity>
 
             <View style={styles.checkboxContainer}>
@@ -181,7 +188,7 @@ const CreateEventsScreen = ({ navigation }) => {
                     thumbColor={isImportant ? '#fff' : '#666'}
                     trackColor={{ false: '#999', true: '#444' }}
                 />
-                <Text style={styles.checkboxLabel}>Important Event</Text>
+                <Text style={[styles.checkboxLabel, { color: textColor }]}>Important Event</Text>
             </View>
 
             <View style={{ height: 50 }} />
@@ -191,7 +198,6 @@ const CreateEventsScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#000',
         flex: 1,
         paddingTop: 80,
         padding: 20,
@@ -201,16 +207,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginBottom: 20,
     },
-    back: {
-        color: '#fff',
-        fontSize: 16,
-    },
     done: {
-        color: '#fff',
         fontSize: 16,
     },
     title: {
-        color: '#fff',
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
@@ -231,37 +231,27 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
     },
     input: {
-        backgroundColor: '#111',
         borderRadius: 10,
         padding: 12,
-        color: '#fff',
         marginBottom: 16,
     },
     dateText: {
-        color: '#fff',
         marginBottom: 16,
     },
     pickerContainer: {
-        backgroundColor: '#111',
         borderRadius: 10,
         marginBottom: 16,
     },
-    picker: {
-        color: '#fff',
-    },
+    picker: {},
     addBtn: {
         marginTop: 10,
         marginBottom: 16,
-    },
-    addBtnText: {
-        color: '#aaa',
     },
     checkboxContainer: {
         flexDirection: 'row',
         alignItems: 'center',
     },
     checkboxLabel: {
-        color: '#fff',
         marginLeft: 8,
     },
 });

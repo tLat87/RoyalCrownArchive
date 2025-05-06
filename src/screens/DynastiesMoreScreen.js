@@ -1,18 +1,32 @@
 import React from 'react';
-import {View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Alert} from 'react-native';
-import {removeDynasty, saveDynasty} from '../redux/slices/savedSlice';
-import {useDispatch, useSelector} from 'react-redux';
+import {
+    View,
+    Text,
+    StyleSheet,
+    Image,
+    ScrollView,
+    TouchableOpacity,
+    Alert
+} from 'react-native';
+import { removeDynasty, saveDynasty } from '../redux/slices/savedSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectTheme } from '../redux/slices/themeSlice';
 
 const DynastiesMoreScreen = ({ navigation, route }) => {
-    const {fullItem} = route.params;
+    const { fullItem } = route.params;
     const dispatch = useDispatch();
     const savedItems = useSelector(state => state.saved.dynasties);
+    const theme = useSelector(selectTheme);
+    const isDarkMode = theme === 'dark';
+
+    const backgroundColor = isDarkMode ? '#000' : '#fff';
+    const textColor = isDarkMode ? '#fff' : '#000';
+    const labelColor = isDarkMode ? '#999' : '#444';
 
     const handleSave = () => {
-        const isSaved = savedItems.some(item => item.name === fullItem.name); // сравнение по уникальному полю
-
+        const isSaved = savedItems.some(item => item.name === fullItem.name);
         if (isSaved) {
-            dispatch(removeDynasty(fullItem.name)); // или другой уникальный идентификатор
+            dispatch(removeDynasty(fullItem.name));
             Alert.alert('Removed', 'Dynasty has been removed from favorites.');
         } else {
             dispatch(saveDynasty(fullItem));
@@ -21,65 +35,54 @@ const DynastiesMoreScreen = ({ navigation, route }) => {
     };
 
     return (
-        <ScrollView style={styles.container}>
-
-            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <ScrollView style={[styles.container, { backgroundColor }]}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <Image source={require('../assets/img/Frame1462984530.png')} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={()=> {handleSave()}} style={styles.backButton}>
+                <TouchableOpacity onPress={handleSave} style={styles.backButton}>
                     <Image source={require('../assets/img/fluent_heart-12-regular.png')} />
                 </TouchableOpacity>
             </View>
 
-            <Image
-                source={fullItem.image}
-                style={styles.image}
-            />
+            <Image source={fullItem.image} style={styles.image} />
 
-            <Text style={styles.title}>{fullItem.name}</Text>
-
+            <Text style={[styles.title, { color: textColor }]}>{fullItem.name}</Text>
 
             <View style={styles.infoBlock}>
-                <Text style={styles.label}>Country</Text>
-                <Text style={styles.text}>{fullItem.country}</Text>
+                <Text style={[styles.label, { color: labelColor }]}>Country</Text>
+                <Text style={[styles.text, { color: textColor }]}>{fullItem.country}</Text>
             </View>
 
             <View style={styles.infoBlock}>
-                <Text style={styles.label}>Origin</Text>
-                <Text style={styles.text}>{fullItem.origin}</Text>
+                <Text style={[styles.label, { color: labelColor }]}>Origin</Text>
+                <Text style={[styles.text, { color: textColor }]}>{fullItem.origin}</Text>
             </View>
 
             <View style={styles.infoBlock}>
-                <Text style={styles.label}>Type</Text>
-                <Text style={styles.text}>
-                    {fullItem.type}
-                </Text>
+                <Text style={[styles.label, { color: labelColor }]}>Type</Text>
+                <Text style={[styles.text, { color: textColor }]}>{fullItem.type}</Text>
             </View>
-            <View style={styles.infoBlock}>
-                <Text style={styles.label}>Period</Text>
-                <Text style={styles.text}>
-                    {fullItem.period}
-                </Text>
-            </View>
-
 
             <View style={styles.infoBlock}>
-                <Text style={styles.label}>Interesting facts</Text>
-                <Text style={styles.text}>・ {fullItem.facts[0]}</Text>
-                <Text style={styles.text}>・ {fullItem.facts[1]}</Text>
-                <Text style={styles.text}>・ {fullItem.facts[2]}</Text>
-
+                <Text style={[styles.label, { color: labelColor }]}>Period</Text>
+                <Text style={[styles.text, { color: textColor }]}>{fullItem.period}</Text>
             </View>
 
-            <View style={{marginBottom: 50}}/>
+            <View style={styles.infoBlock}>
+                <Text style={[styles.label, { color: labelColor }]}>Interesting facts</Text>
+                {fullItem.facts.map((fact, index) => (
+                    <Text key={index} style={[styles.text, { color: textColor }]}>・ {fact}</Text>
+                ))}
+            </View>
+
+            <View style={{ marginBottom: 50 }} />
         </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#000',
         flex: 1,
         padding: 20,
         paddingTop: 70,
@@ -89,11 +92,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 12,
     },
-    backText: {
-        color: 'white',
-        marginLeft: 6,
-        fontSize: 16,
-    },
     image: {
         width: '100%',
         height: 300,
@@ -102,7 +100,6 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 26,
-        color: 'white',
         fontWeight: '600',
         marginBottom: 20,
         fontFamily: 'Aboreto',
@@ -112,21 +109,13 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     label: {
-        color: '#999',
         fontSize: 13,
         marginBottom: 4,
     },
     text: {
-        color: '#fff',
         fontSize: 15,
         lineHeight: 20,
     },
-    map: {
-        width: '100%',
-        height: 180,
-        marginTop: 10,
-        borderRadius: 12,
-    },
 });
 
-export default DynastiesMoreScreen
+export default DynastiesMoreScreen;

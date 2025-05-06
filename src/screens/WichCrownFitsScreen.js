@@ -41,6 +41,9 @@ const data = [
 
 const WichCrownFitsScreen = ({ navigation }) => {
     const [fullItem, setFullItem] = useState(null);
+    const theme = useSelector(selectTheme);
+    const isDarkMode = theme === 'dark';
+    const localStyles = styles(isDarkMode);
 
     useEffect(() => {
         const randomIndex = Math.floor(Math.random() * data.length);
@@ -63,63 +66,58 @@ const WichCrownFitsScreen = ({ navigation }) => {
 
     if (!fullItem) {
         return (
-            <View style={styles.container}>
-                <Text style={{ color: 'white' }}>Loading...</Text>
+            <View style={localStyles.container}>
+                <Text style={{ color: isDarkMode ? '#fff' : '#000' }}>Loading...</Text>
             </View>
         );
     }
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <ScrollView style={localStyles.container}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={localStyles.backButton}>
                     <Image source={require('../assets/img/Frame1462984530.png')} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={handleShare} style={styles.backButton}>
+                <TouchableOpacity onPress={handleShare} style={localStyles.backButton}>
                     <Image source={require('../assets/img/majesticons_share.png')} />
                 </TouchableOpacity>
             </View>
 
             <Image
                 source={fullItem.img}
-                style={styles.image}
+                style={localStyles.image}
             />
 
-            <Text style={styles.title}>{fullItem.name}</Text>
+            <Text style={localStyles.title}>{fullItem.name}</Text>
 
-            <View style={styles.infoBlock}>
-                <Text style={styles.label}>Character</Text>
-                <Text style={styles.text}>{fullItem.character}</Text>
+            <View style={localStyles.infoBlock}>
+                <Text style={localStyles.label}>Character</Text>
+                <Text style={localStyles.text}>{fullItem.character}</Text>
             </View>
 
-            <View style={styles.infoBlock}>
-                <Text style={styles.label}>Speech</Text>
-                <Text style={styles.text}>{fullItem.speech}</Text>
+            <View style={localStyles.infoBlock}>
+                <Text style={localStyles.label}>Speech</Text>
+                <Text style={localStyles.text}>{fullItem.speech}</Text>
             </View>
 
-
-            <View style={styles.infoBlock}>
-                <Text style={styles.label}>Example</Text>
-                <Text style={styles.text}>
-                    {fullItem.example}
-                </Text>
+            <View style={localStyles.infoBlock}>
+                <Text style={localStyles.label}>Example</Text>
+                <Text style={localStyles.text}>{fullItem.example}</Text>
             </View>
 
-            <View style={styles.infoBlock}>
-                <Text style={styles.label}>Historical</Text>
-                <Text style={styles.text}>
-                    {fullItem.historical}
-                </Text>
+            <View style={localStyles.infoBlock}>
+                <Text style={localStyles.label}>Historical</Text>
+                <Text style={localStyles.text}>{fullItem.historical}</Text>
             </View>
 
-            <View style={{marginBottom: 50}}/>
+            <View style={{ marginBottom: 50 }} />
         </ScrollView>
     );
 };
 
-const styles = StyleSheet.create({
+const styles = (isDarkMode) => StyleSheet.create({
     container: {
-        backgroundColor: '#000',
+        backgroundColor: isDarkMode ? '#000' : '#fff',
         flex: 1,
         padding: 20,
         paddingTop: 70,
@@ -129,11 +127,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 12,
     },
-    backText: {
-        color: 'white',
-        marginLeft: 6,
-        fontSize: 16,
-    },
     image: {
         width: '100%',
         height: 300,
@@ -142,7 +135,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 26,
-        color: 'white',
+        color: isDarkMode ? '#fff' : '#000',
         fontWeight: '600',
         marginBottom: 20,
         letterSpacing: 1,
@@ -152,12 +145,12 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     label: {
-        color: '#999',
+        color: isDarkMode ? '#999' : '#666',
         fontSize: 13,
         marginBottom: 4,
     },
     text: {
-        color: '#fff',
+        color: isDarkMode ? '#fff' : '#000',
         fontSize: 15,
         lineHeight: 20,
     },
@@ -169,4 +162,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default WichCrownFitsScreen
+export default WichCrownFitsScreen;

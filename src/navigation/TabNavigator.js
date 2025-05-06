@@ -27,21 +27,35 @@ const screens = {
 const tabConfig = {
     screenOptions: ({ route }) => ({
         headerShown: false,
-        headerTitle: '',
-        headerStyle: { backgroundColor: '#F9F6F1' },
-        headerShadowVisible: false,
-        tabBarStyle: { backgroundColor: '#191919' },
-        tabBarLabelStyle: { color: '#EBEBF580' },
-        tabBarActiveTintColor: '#fff',
-        tabBarInactiveTintColor: '#EBEBF580',
-        tabBarLabel: ({ color }) => (
-            <Text style={{ color, fontSize: 12 }}>{route.name}</Text>
-        ),
+        tabBarShowLabel: false, // Скрыть подписи под иконками
+        tabBarStyle: {
+            position: 'absolute',
+            bottom: 20,
+            left: 50,
+            width: '90%',
+            marginLeft: '5%',
+            right: 50,
+            backgroundColor: '#434343', // светло-фиолетовый с прозрачностью
+            borderRadius: 40,
+            height: 60,
+            borderTopWidth: 0,
+            elevation: 0,
+        },
         tabBarIcon: ({ focused }) => (
-            <Image source={icons[route.name]} />
+            <Image
+                source={icons[route.name]}
+                style={{
+                    tintColor: focused ? '#FFD700' : '#D1C2FF', // активная иконка жёлтая, неактивные — светло-фиолетовые
+                    width: 24,
+                    height: 24,
+                    marginBottom: -19,
+               }}
+                resizeMode="contain"
+            />
         ),
     }),
 };
+
 
 const Tab = createBottomTabNavigator();
 

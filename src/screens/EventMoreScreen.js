@@ -10,15 +10,18 @@ import {
     Alert
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useDispatch } from 'react-redux';
-import {removeEvent} from '../redux/slices/eventSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { removeEvent } from '../redux/slices/eventSlice';
+import { selectTheme } from '../redux/slices/themeSlice';
 
 const EventMoreScreen = () => {
     const navigation = useNavigation();
     const route = useRoute();
     const dispatch = useDispatch();
-    const { fullItem } = route.params;
+    const theme = useSelector(selectTheme);
+    const isDarkMode = theme === 'dark';
 
+    const { fullItem } = route.params;
     const {
         eventName,
         region,
@@ -45,11 +48,83 @@ const EventMoreScreen = () => {
         ]);
     };
 
+    const styles = StyleSheet.create({
+        container: {
+            backgroundColor: isDarkMode ? '#000' : '#fff',
+            flex: 1,
+            padding: 20,
+            paddingTop: 80,
+        },
+        headerIcons: {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            gap: 12,
+            marginBottom: 20,
+        },
+        icon: {
+            width: 26,
+            height: 26,
+            tintColor: isDarkMode ? '#fff' : '#000',
+        },
+        image: {
+            width: '100%',
+            height: 300,
+            borderRadius: 20,
+            marginBottom: 20,
+        },
+        important: {
+            borderColor: isDarkMode ? '#fff' : '#000',
+            borderWidth: 1,
+            borderRadius: 8,
+            paddingHorizontal: 10,
+            paddingVertical: 4,
+            color: isDarkMode ? '#fff' : '#000',
+            alignSelf: 'flex-start',
+            marginBottom: 12,
+        },
+        title: {
+            color: isDarkMode ? '#fff' : '#000',
+            fontSize: 24,
+            fontWeight: 'bold',
+            marginBottom: 16,
+            fontFamily: 'Aboreto',
+        },
+        label: {
+            color: isDarkMode ? '#888' : '#555',
+            fontSize: 14,
+            marginBottom: 4,
+        },
+        text: {
+            color: isDarkMode ? '#fff' : '#000',
+            fontSize: 16,
+            marginBottom: 16,
+        },
+        tag: {
+            borderColor: isDarkMode ? '#fff' : '#000',
+            borderWidth: 1,
+            borderRadius: 8,
+            paddingHorizontal: 10,
+            paddingVertical: 6,
+            alignSelf: 'flex-start',
+            marginBottom: 16,
+        },
+        tagText: {
+            color: isDarkMode ? '#fff' : '#000',
+        },
+        participant: {
+            backgroundColor: isDarkMode ? '#111' : '#f0f0f0',
+            color: isDarkMode ? '#fff' : '#000',
+            padding: 12,
+            borderRadius: 10,
+            marginBottom: 12,
+        },
+    });
+
     return (
         <ScrollView style={styles.container}>
             <View style={styles.headerIcons}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Image source={require('../assets/img/Frame1462984530.png')} />
+                    <Image source={require('../assets/img/Frame1462984530.png')} style={styles.icon} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleDelete}>
                     <Image source={require('../assets/img/fluent_delete-32-filled.png')} style={styles.icon} />
@@ -59,7 +134,7 @@ const EventMoreScreen = () => {
             {image ? (
                 <Image source={{ uri: image }} style={styles.image} />
             ) : (
-                <View style={[styles.image, { backgroundColor: '#333' }]} />
+                <View style={[styles.image, { backgroundColor: isDarkMode ? '#333' : '#ccc' }]} />
             )}
 
             {isImportant && <Text style={styles.important}>Important Event</Text>}
@@ -91,7 +166,7 @@ const EventMoreScreen = () => {
                     editable={false}
                     value={p}
                     placeholder={`Participant ${index + 1}`}
-                    placeholderTextColor="#777"
+                    placeholderTextColor={isDarkMode ? '#777' : '#aaa'}
                 />
             ))}
 
@@ -99,82 +174,5 @@ const EventMoreScreen = () => {
         </ScrollView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#000',
-        flex: 1,
-        padding: 20,
-        paddingTop: 80,
-    },
-    back: {
-        color: '#fff',
-        fontSize: 16,
-        marginBottom: 10,
-    },
-    headerIcons: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        gap: 12,
-        marginBottom: 20,
-    },
-    icon: {
-        width: 26,
-        height: 26,
-        tintColor: '#fff',
-    },
-    image: {
-        width: '100%',
-        height: 300,
-        borderRadius: 20,
-        marginBottom: 20,
-    },
-    important: {
-        borderColor: '#fff',
-        borderWidth: 1,
-        borderRadius: 8,
-        paddingHorizontal: 10,
-        paddingVertical: 4,
-        color: '#fff',
-        alignSelf: 'flex-start',
-        marginBottom: 12,
-    },
-    title: {
-        color: '#fff',
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 16,
-        fontFamily: 'Aboreto',
-    },
-    label: {
-        color: '#888',
-        fontSize: 14,
-        marginBottom: 4,
-    },
-    text: {
-        color: '#fff',
-        fontSize: 16,
-        marginBottom: 16,
-    },
-    tag: {
-        borderColor: '#fff',
-        borderWidth: 1,
-        borderRadius: 8,
-        paddingHorizontal: 10,
-        paddingVertical: 6,
-        alignSelf: 'flex-start',
-        marginBottom: 16,
-    },
-    tagText: {
-        color: '#fff',
-    },
-    participant: {
-        backgroundColor: '#111',
-        color: '#fff',
-        padding: 12,
-        borderRadius: 10,
-        marginBottom: 12,
-    },
-});
 
 export default EventMoreScreen;

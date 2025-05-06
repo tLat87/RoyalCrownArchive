@@ -1,22 +1,30 @@
 import React from 'react';
-import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { selectTheme } from '../redux/slices/themeSlice';
 
-const DynastyCard = ({ image, name, type, period, fullItem }) => {
+const DynastyCard = ({ image, name, type, fullItem, isDarkMode }) => {
     const navigation = useNavigation();
+
+    const localStyles = styles(isDarkMode);
+
     return (
-        <TouchableOpacity style={styles.card} onPress={() => {navigation.navigate('PlaceMoreScreen', {fullItem })}}>
-            <Image source={image} style={styles.image} />
-            <View style={styles.textContainer}>
-                <Text style={styles.name}>{name}</Text>
-                <Text style={styles.meta}>{type}</Text>
+        <TouchableOpacity style={localStyles.card} onPress={() => navigation.navigate('PlaceMoreScreen', { fullItem })}>
+            <Image source={image} style={localStyles.image} />
+            <View style={localStyles.textContainer}>
+                <Text style={localStyles.name}>{name}</Text>
+                <Text style={localStyles.meta}>{type}</Text>
             </View>
         </TouchableOpacity>
     );
 };
 
-
 const PlacesScreen = () => {
+    const theme = useSelector(selectTheme);
+    const isDarkMode = theme === 'dark';
+    const localStyles = styles(isDarkMode);
+
     const dynasties = [
         { name: 'Versailles', type: 'Bourbons | France', fact: ['2300 rooms, 67 staircases.', 'The Treaty of Versailles (1919) was signed here.'], coordinates: '48.8048, 2.1203',
             pos: require('../assets/spes/b7a47333f2fc030c8f880991fd5e28562a021c27.png'),description : 'Main residence of Louis XIV, symbol of absolutism. Famous for the Hall of Mirrors, the park with fountains and the Orangery.',
@@ -40,25 +48,25 @@ const PlacesScreen = () => {
     ];
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Place</Text>
+        <View style={localStyles.container}>
+            <Text style={localStyles.header}>Place</Text>
             <ScrollView showsVerticalScrollIndicator={false}>
                 {dynasties.map((dynasty, index) => (
-                    <DynastyCard key={index} {...dynasty} fullItem={dynasty} />
+                    <DynastyCard key={index} {...dynasty} fullItem={dynasty} isDarkMode={isDarkMode} />
                 ))}
             </ScrollView>
         </View>
     );
-}
+};
 
-const styles = StyleSheet.create({
+const styles = (isDarkMode) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#000',
+        backgroundColor: isDarkMode ? '#000' : '#fff',
         paddingTop: 60,
     },
     header: {
-        color: 'white',
+        color: isDarkMode ? 'white' : 'black',
         fontSize: 24,
         fontWeight: '700',
         marginBottom: 20,
@@ -67,8 +75,6 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         letterSpacing: 1,
     },
-
-
     card: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -88,13 +94,13 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontFamily: 'Aboreto',
         fontWeight: '600',
-        color: 'white',
+        color: isDarkMode ? 'white' : 'black',
         letterSpacing: 1,
     },
     meta: {
-        color: 'lightgray',
+        color: isDarkMode ? 'lightgray' : '#555',
         marginTop: 4,
     },
 });
 
-export default PlacesScreen
+export default PlacesScreen;

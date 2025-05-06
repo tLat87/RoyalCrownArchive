@@ -1,66 +1,73 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, Switch, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import React from 'react';
+import {View, Text, StyleSheet, Image, Switch, TouchableOpacity, ScrollView, Alert, Linking} from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectTheme, toggleTheme } from '../redux/slices/themeSlice';
 
 const SettingsScreen = ({ navigation }) => {
-    const [isDarkMode, setIsDarkMode] = useState(true);
+    const theme = useSelector(selectTheme);
+    const dispatch = useDispatch();
+    const isDarkMode = theme === 'dark';
+    const localStyles = styles(isDarkMode);
 
-    const showWIPAlert = () => {
-        Alert.alert('In Development', 'This feature is still in development.');
-    };
 
     const toggleSwitch = () => {
-        setIsDarkMode(prev => !prev);
-        showWIPAlert();
+        dispatch(toggleTheme());
     };
 
+    const openLink = async (url) => {
+        const supported = await Linking.canOpenURL(url);
+        if (supported) {
+            await Linking.openURL(url);
+        } else {
+            Alert.alert("Error", "Can't open this URL: " + url);
+        }
+    };
+
+
     return (
-        <ScrollView style={styles.container}>
-            <Text style={styles.header}>SETTINGS</Text>
+        <ScrollView style={localStyles.container}>
+            <Text style={localStyles.header}>SETTINGS</Text>
 
             <Image
                 source={require('../assets/img/Img.png')}
-                style={styles.image}
+                style={localStyles.image}
                 resizeMode="contain"
             />
 
-            <View style={styles.item}>
-                <Text style={styles.label}>Interface theme</Text>
+            <View style={localStyles.item}>
+                <Text style={localStyles.label}>Interface theme</Text>
                 <Switch
                     trackColor={{ false: '#ccc', true: '#C7B08F' }}
-                    thumbColor={isDarkMode ? '#fff' : '#fff'}
+                    thumbColor={'#fff'}
                     ios_backgroundColor="#ccc"
                     onValueChange={toggleSwitch}
                     value={isDarkMode}
                 />
             </View>
 
-            <TouchableOpacity style={styles.item} onPress={showWIPAlert}>
-                <Text style={styles.label}>Terms of use</Text>
-                <Text style={styles.arrow}>›</Text>
+            <TouchableOpacity style={localStyles.item} onPress={() => openLink('https://www.termsfeed.com/live/d7e18217-35c9-4b07-9a08-6c983745cb55')}>
+                <Text style={localStyles.label}>Terms of use</Text>
+                <Text style={localStyles.arrow}>›</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.item} onPress={showWIPAlert}>
-                <Text style={styles.label}>Privacy policy</Text>
-                <Text style={styles.arrow}>›</Text>
+            <TouchableOpacity style={localStyles.item} onPress={() => openLink('https://www.termsfeed.com/live/d7e18217-35c9-4b07-9a08-6c983745cb55')}>
+                <Text style={localStyles.label}>Privacy policy</Text>
+                <Text style={localStyles.arrow}>›</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.item} onPress={showWIPAlert}>
-                <Text style={styles.label}>About Developer</Text>
-                <Text style={styles.arrow}>›</Text>
-            </TouchableOpacity>
         </ScrollView>
     );
 };
 
-const styles = StyleSheet.create({
+const styles = (isDarkMode) => StyleSheet.create({
     container: {
-        backgroundColor: '#000',
+        backgroundColor: isDarkMode ? '#000' : '#fff',
         flex: 1,
         paddingHorizontal: 20,
         paddingTop: 60,
     },
     header: {
-        color: '#fff',
+        color: isDarkMode ? '#fff' : '#000',
         fontSize: 24,
         letterSpacing: 1,
         fontFamily: 'Aboreto',
@@ -76,16 +83,16 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        borderColor: '#222',
+        borderColor: isDarkMode ? '#222' : '#ccc',
         borderBottomWidth: 1,
         paddingVertical: 18,
     },
     label: {
-        color: '#fff',
+        color: isDarkMode ? '#fff' : '#000',
         fontSize: 16,
     },
     arrow: {
-        color: '#fff',
+        color: isDarkMode ? '#fff' : '#000',
         fontSize: 22,
         fontWeight: '300',
     },
